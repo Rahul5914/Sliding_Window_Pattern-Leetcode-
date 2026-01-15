@@ -1,0 +1,117 @@
+🧠 Problem Statement (Simple)
+
+Given two strings s1 and s2, return true if any permutation of s1 is a substring of s2, otherwise return false.
+
+🎤 INTERVIEW SCRIPT (SAY THIS EXACTLY)
+
+“My first thought was to generate all permutations of s1 and check if any of them exists in s2, but that would be factorial time and clearly inefficient.
+Since this is a permutation matching problem with a fixed window size, I optimized it using a sliding window with character frequency counting, achieving linear time complexity.”
+
+💥 This sentence alone shows brute force awareness + optimization thinking.
+
+🧠 Key Insight
+
+Permutation ⇒ same character frequency
+
+Window size = len(s1) ⇒ fixed sliding window
+
+Compare frequency of s1 with every window of s2
+
+🪟 Sliding Window Strategy
+
+Build frequency of s1
+
+Build frequency of first window in s2
+
+If equal → return true
+
+Slide window:
+
+Add right character
+
+Remove left character
+
+Repeat
+
+🧪 Dry Run (Very Important in Interview)
+s1 = "ab"
+s2 = "eidbaooo"
+
+
+Window size = 2
+
+Window	Match
+"ei"	❌
+"id"	❌
+"db"	❌
+"ba"	✅ → return true
+🧾 CLEAN C++ CODE (INTERVIEW-READY)
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+        if (s1.size() > s2.size()) return false;
+
+        vector<int> freq1(26, 0), freq2(26, 0);
+
+        // Step 1: Frequency of s1
+        for (char c : s1) {
+            freq1[c - 'a']++;
+        }
+
+        int k = s1.size();
+
+        // Step 2: First window frequency
+        for (int i = 0; i < k; i++) {
+            freq2[s2[i] - 'a']++;
+        }
+
+        // Step 3: Compare first window
+        if (freq1 == freq2) return true;
+
+        // Step 4: Slide the window
+        for (int i = k; i < s2.size(); i++) {
+            freq2[s2[i] - 'a']++;       // add right
+            freq2[s2[i - k] - 'a']--;   // remove left
+
+            if (freq1 == freq2)
+                return true;
+        }
+
+        return false;
+    }
+};
+
+⏱️ Complexity Analysis (Must Speak)
+Metric	Value
+Time	O(n)
+Space	O(26) → O(1)
+🎯 PATTERN RECOGNITION
+
+This is a Fixed Size Sliding Window + Frequency Matching problem.
+
+Difference from 438:
+Problem	Output
+438	All indices
+567	True / False
+
+Same logic, different return type.
+
+🧠 ONE-LINE MEMORY HOOK
+
+Permutation in string ⇒ Fixed window ⇒ Frequency compare
+
+🔥 INTERVIEW FOLLOW-UP QUESTIONS
+
+How would you optimize array comparison?
+
+What if characters are uppercase?
+
+Can this be solved using hashmap?
+
+Difference between 567 and 76?
+
+🎤 FINAL POWER LINE (Say This at End)
+
+“Since the window size is fixed, sliding window is the most optimal approach here.”
+
+💥 Interviewer satisfied.
