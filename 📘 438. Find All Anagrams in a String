@@ -1,0 +1,153 @@
+📘 438. Find All Anagrams in a String
+🧠 Problem Statement (Simple Words)
+
+Given:
+
+string s
+
+string p
+
+Return all starting indices of substrings in s that are anagrams of p.
+
+🎤 INTERVIEW SCRIPT (Say This Exactly)
+
+“I first thought of a brute force approach where I check every substring of length p.length() and compare character frequencies, but that would take O(n × 26) time.
+Since the window size is fixed, I optimized it using a sliding window with frequency arrays, reducing the time complexity to O(n).”
+
+(💥 This sentence impresses interviewers — keep it memorized.)
+
+❌ Brute Force (Why We Reject It)
+
+For every substring of size p.length():
+
+Count characters
+
+Compare with p
+
+Time Complexity: O(n × 26)
+
+Not optimal
+
+✅ Optimal Approach: Sliding Window + Frequency Count
+🔑 Key Insight
+
+Anagram = same character frequency
+
+Window size is fixed = len(p) → Sliding Window
+
+Use two arrays of size 26:
+
+pFreq → frequency of p
+
+windowFreq → current window in s
+
+🪟 Sliding Window Logic
+
+Build frequency of p
+
+Build frequency of first window in s
+
+Compare arrays → if equal, store index
+
+Slide window:
+
+Add new character (right)
+
+Remove old character (left)
+
+Repeat
+
+🧪 Visual Dry Run
+s = "cbaebabacd"
+p = "abc"
+
+Window: "cba" → anagram ✔ index 0
+Window: "bae" → ❌
+Window: "aeb" → ❌
+Window: "eba" → ❌
+Window: "bab" → ❌
+Window: "aba" → ❌
+Window: "bac" → ✔ index 6
+
+
+Output:
+
+[0, 6]
+
+🧾 CLEAN C++ CODE (Interview-Ready, Commented)
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        vector<int> result;
+        
+        if (s.size() < p.size()) return result;
+
+        vector<int> pFreq(26, 0), windowFreq(26, 0);
+
+        // Step 1: Frequency of string p
+        for (char c : p) {
+            pFreq[c - 'a']++;
+        }
+
+        int k = p.size();
+
+        // Step 2: First window frequency
+        for (int i = 0; i < k; i++) {
+            windowFreq[s[i] - 'a']++;
+        }
+
+        // Step 3: Compare first window
+        if (windowFreq == pFreq)
+            result.push_back(0);
+
+        // Step 4: Slide the window
+        for (int i = k; i < s.size(); i++) {
+            windowFreq[s[i] - 'a']++;         // add right char
+            windowFreq[s[i - k] - 'a']--;     // remove left char
+
+            if (windowFreq == pFreq)
+                result.push_back(i - k + 1);
+        }
+
+        return result;
+    }
+};
+
+⏱️ Complexity Analysis (Must Say)
+Metric	Value
+Time	O(n)
+Space	O(26) → O(1)
+🎯 PATTERN RECOGNITION (IMPORTANT)
+
+This is a FIXED SIZE SLIDING WINDOW + FREQUENCY MATCH problem.
+
+Use this when you see:
+
+“Anagram”
+
+“Permutation”
+
+“Substring”
+
+“All starting indices”
+
+🧠 MINI TEMPLATE (MEMORIZE)
+Build freq of pattern
+Build freq of first window
+If equal → answer
+Slide window:
+    add right
+    remove left
+    compare
+
+🔥 FOLLOW-UP QUESTIONS (Interviewers Ask)
+
+What if characters are uppercase?
+
+Can we avoid comparing full arrays every time?
+
+How would you do this using hashmap?
+
+Difference between 438 and 567 (Permutation in String)?
+
+(👉 567 returns true/false, 438 returns indices)
