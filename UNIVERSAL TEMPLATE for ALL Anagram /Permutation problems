@@ -1,0 +1,136 @@
+🎯 UNIVERSAL TEMPLATE: ANAGRAM / PERMUTATION PROBLEMS
+🎤 INTERVIEW SCRIPT (MEMORIZE & SPEAK VERBATIM)
+
+“My initial thought was a brute force approach where I generate all substrings and compare character frequencies, but that would be inefficient.
+Since the problem involves checking permutations within a string, I optimized it using a sliding window with frequency counting, which reduces the time complexity to linear.”
+
+💥 This sentence works for ANY anagram / permutation problem.
+
+🧠 WHEN TO USE THIS TEMPLATE
+
+Use immediately if the problem says:
+
+Anagram
+
+Permutation
+
+Rearrangement
+
+Same characters
+
+Substring contains all characters
+
+🧩 CORE IDEA (1 Line)
+
+Two strings are anagrams iff their character frequencies are equal
+
+🪟 TEMPLATE 1: FIXED WINDOW (Most Common)
+
+Used in:
+
+438. Find All Anagrams in a String
+
+567. Permutation in String
+
+242. Valid Anagram
+
+✅ FIXED WINDOW SLIDING TEMPLATE (C++)
+vector<int> freqPattern(26, 0);
+vector<int> freqWindow(26, 0);
+
+// Step 1: Build pattern frequency
+for (char c : p)
+    freqPattern[c - 'a']++;
+
+// Step 2: Build first window
+for (int i = 0; i < p.size(); i++)
+    freqWindow[s[i] - 'a']++;
+
+// Step 3: Compare first window
+if (freqWindow == freqPattern)
+    // valid anagram
+
+// Step 4: Slide window
+for (int i = p.size(); i < s.size(); i++) {
+    freqWindow[s[i] - 'a']++;          // add right
+    freqWindow[s[i - p.size()] - 'a']--; // remove left
+
+    if (freqWindow == freqPattern)
+        // valid anagram found
+}
+
+🧪 HOW TO MODIFY THIS TEMPLATE
+Problem	Output
+438	Store index
+567	Return true
+242	Compare once
+🪟 TEMPLATE 2: VARIABLE WINDOW (Advanced)
+
+Used in:
+
+76. Minimum Window Substring
+
+30. Substring with Concatenation of All Words
+
+🎤 INTERVIEW SCRIPT (VARIABLE WINDOW)
+
+“Since the window size is not fixed and depends on character constraints, I used a variable sliding window with a frequency map and a count tracker.”
+
+✅ VARIABLE WINDOW TEMPLATE (C++)
+vector<int> freq(26, 0);
+int required = p.size();
+
+// build pattern frequency
+for (char c : p)
+    freq[c - 'a']++;
+
+int left = 0;
+
+for (int right = 0; right < s.size(); right++) {
+
+    if (freq[s[right] - 'a'] > 0)
+        required--;
+
+    freq[s[right] - 'a']--;
+
+    // when window is valid
+    while (required == 0) {
+        // update answer
+
+        freq[s[left] - 'a']++;
+        if (freq[s[left] - 'a'] > 0)
+            required++;
+
+        left++;
+    }
+}
+
+🧠 MASTER DECISION TREE (VERY IMPORTANT)
+Is order important?
+ └── NO → Anagram / Permutation
+       ├── Fixed length? → Fixed Sliding Window
+       └── Variable length? → Variable Sliding Window
+
+🔥 COMMON MISTAKES (INTERVIEW RED FLAGS)
+
+❌ Sorting substrings → O(n log n)
+❌ Rebuilding frequency every window
+❌ Using extra maps when array[26] works
+❌ Forgetting to remove left character
+
+🧠 ONE-LINE MEMORY HOOK
+
+Anagram ⇒ Frequency ⇒ Sliding Window
+
+📌 PROBLEMS YOU NOW AUTO-SOLVE
+LeetCode	Name
+242	Valid Anagram
+438	Find All Anagrams
+567	Permutation in String
+76	Minimum Window Substring
+30	Substring with Concatenation
+🎯 FINAL INTERVIEW POWER LINE
+
+“This is a classic sliding window frequency matching problem.”
+
+💥 Say this → interviewer nods.
