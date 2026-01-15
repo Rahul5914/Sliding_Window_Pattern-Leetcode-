@@ -1,0 +1,138 @@
+📘 643. Maximum Average Subarray I (LeetCode)
+
+This is a classic Sliding Window problem (not DP).
+I’ll explain it in an interview-oriented, step-by-step way, with intuition, dry run, and clean C++ code.
+
+🧠 Problem Understanding (Interviewer Style)
+
+Interviewer:
+You’re given an integer array nums and an integer k.
+Find the maximum average of any contiguous subarray of length exactly k.
+
+🔍 Key Observations
+
+Subarray must be contiguous
+
+Length is fixed = k
+
+We want maximum average, which is equivalent to:
+
+👉 maximum sum of subarray of size k
+
+Because:
+
+average = sum / k
+
+
+If k is constant, maximizing sum automatically maximizes average.
+
+🚫 Brute Force (Why it fails)
+
+Check every subarray of size k
+
+Time Complexity: O(n * k) → TLE for large inputs
+
+So we need something faster.
+
+✅ Optimal Approach: Sliding Window
+💡 Idea
+
+Compute sum of first k elements → initial window
+
+Slide the window one step at a time:
+
+Add next element
+
+Remove element going out of window
+
+Keep track of maximum sum seen
+
+This avoids recomputing sums again and again.
+
+🪟 Sliding Window Visualization
+
+Example:
+
+nums = [1,12,-5,-6,50,3], k = 4
+
+Step 1: First window
+[1, 12, -5, -6] → sum = 2
+
+Step 2: Slide window
+Remove 1, add 50
+[12, -5, -6, 50] → sum = 51
+
+Step 3: Slide again
+Remove 12, add 3
+[-5, -6, 50, 3] → sum = 42
+
+
+👉 Maximum sum = 51
+
+👉 Maximum average = 51 / 4 = 12.75
+
+🧪 Dry Run (Pointer Movement)
+Window size = k
+left = 0
+right = k
+
+
+Each step:
+
+currentSum += nums[right]
+currentSum -= nums[left]
+left++
+right++
+
+🧾 Clean C++ Code (Fully Commented)
+class Solution {
+public:
+    double findMaxAverage(vector<int>& nums, int k) {
+        int n = nums.size();
+        
+        // Step 1: Calculate sum of first k elements
+        double windowSum = 0;
+        for (int i = 0; i < k; i++) {
+            windowSum += nums[i];
+        }
+        
+        double maxSum = windowSum;
+
+        // Step 2: Slide the window
+        for (int i = k; i < n; i++) {
+            windowSum += nums[i];      // add new element
+            windowSum -= nums[i - k];  // remove element leaving window
+            
+            maxSum = max(maxSum, windowSum);
+        }
+
+        // Step 3: Return maximum average
+        return maxSum / k;
+    }
+};
+
+⏱️ Complexity Analysis
+Metric	Value
+Time	O(n)
+Space	O(1)
+🎯 Interview Pattern Recognition
+
+This problem is a template for:
+
+🔹 “Maximum / Minimum sum of subarray of fixed size”
+
+Similar Problems:
+
+Maximum Sum Subarray of Size K
+
+Diet Plan Performance
+
+Average of Fixed Window
+
+🧠 How to Remember This in Interviews
+
+Fixed window size? → Sliding Window
+
+Average asked? → Convert to sum
+
+Max/Min? → Track best value while sliding
