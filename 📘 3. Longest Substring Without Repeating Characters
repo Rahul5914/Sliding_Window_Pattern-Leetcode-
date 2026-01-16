@@ -1,0 +1,125 @@
+🎤 INTERVIEW SCRIPT (SAY THIS EXACTLY)
+
+“I first thought of checking all substrings and verifying if they contain unique characters, but that would take O(n²) time.
+To optimize this, I used a sliding window with a hashmap to track the last seen index of each character, reducing the time complexity to O(n).”
+
+💥 This sentence shows brute force awareness + optimization.
+
+🧠 CORE IDEA (VERY SIMPLE)
+
+We need the longest contiguous substring
+
+Characters must be unique
+
+Use sliding window
+
+Use a map to remember where a character was last seen
+
+🪟 WHY MAP IS NEEDED HERE
+
+Because:
+
+We must know if a character already exists in the current window
+
+We must jump the left pointer forward
+
+Characters are not just counted, we store last index
+
+🧪 EXAMPLE USED FOR DRY RUN
+s = "abcabcbb"
+
+
+Answer = 3 ("abc")
+
+🧾 C++ CODE WITH INLINE DRY RUN + COMMENTS
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+
+        unordered_map<char, int> mp;  
+        // mp[char] = last index where char appeared
+
+        int left = 0;
+        int maxLen = 0;
+
+        // Example: s = "abcabcbb"
+        for (int right = 0; right < s.size(); right++) {
+
+            char c = s[right];
+
+            // -------------------------------
+            // If character already seen
+            // and it lies inside current window
+            // -------------------------------
+            if (mp.find(c) != mp.end() && mp[c] >= left) {
+                // Move left pointer just after last occurrence
+                // Example:
+                // s = "abcabcbb"
+                // right = 3, c = 'a'
+                // last 'a' was at index 0
+                // so left = 0 + 1 = 1
+                left = mp[c] + 1;
+            }
+
+            // Update last seen index of character
+            mp[c] = right;
+
+            // Current window length
+            // Example: right = 2, left = 0 → "abc"
+            maxLen = max(maxLen, right - left + 1);
+        }
+
+        return maxLen;
+    }
+};
+
+🧪 STEP-BY-STEP WINDOW MOVEMENT
+s = "abcabcbb"
+
+right=0 → "a"        len=1
+right=1 → "ab"       len=2
+right=2 → "abc"      len=3
+right=3 → duplicate 'a' → left=1 → "bca"
+right=4 → duplicate 'b' → left=2 → "cab"
+right=5 → duplicate 'c' → left=3 → "abc"
+right=6 → duplicate 'b' → left=5 → "cb"
+right=7 → duplicate 'b' → left=7 → "b"
+
+
+Max length = 3
+
+⏱️ COMPLEXITY (SAY THIS)
+Metric	Value
+Time	O(n)
+Space	O(n)
+🧠 WHY mp.find() IS USED HERE
+
+We need to:
+
+Check existence without creating keys
+
+Know if character appeared inside current window
+
+if (mp.find(c) != mp.end() && mp[c] >= left)
+
+🎯 PATTERN RECOGNITION
+
+This is a VARIABLE SIZE SLIDING WINDOW problem.
+
+Use this pattern when:
+
+Window expands & shrinks
+
+Condition breaks (duplicate found)
+
+Need longest / smallest substring
+
+🧠 ONE-LINE MEMORY HOOK
+
+Duplicate found → move left pointer
+
+🎤 FINAL INTERVIEW POWER LINE
+
+“This is a classic variable sliding window problem where the left pointer jumps forward using last seen indices.”
+
+💥 Interviewer impressed.
