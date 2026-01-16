@@ -1,0 +1,107 @@
+🎤 INTERVIEW SCRIPT (SAY THIS EXACTLY)
+
+“I first considered checking all subarrays and calculating their sums, but that would take O(n²) time.
+Since all numbers are positive, I optimized it using a sliding window where I expand the window to reach the target sum and shrink it to minimize the length.”
+
+💥 This shows brute force awareness + key optimization insight.
+
+🧠 CORE OBSERVATION (VERY IMPORTANT)
+
+🚨 All numbers are POSITIVE
+
+Because of this:
+
+Expanding window → sum increases
+
+Shrinking window → sum decreases
+
+👉 This allows sliding window to work.
+
+🪟 SLIDING WINDOW IDEA
+
+Use two pointers: left, right
+
+Expand right → add elements
+
+While sum >= target:
+
+update answer
+
+shrink window from left
+
+🧪 EXAMPLE FOR DRY RUN
+target = 7
+nums = [2,3,1,2,4,3]
+
+
+Answer = 2 → [4,3]
+
+🧾 C++ CODE WITH INLINE DRY RUN + COMMENTS
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+
+        int left = 0;
+        int sum = 0;
+        int minLen = INT_MAX;
+
+        // Example: nums = [2,3,1,2,4,3], target = 7
+        for (int right = 0; right < nums.size(); right++) {
+
+            sum += nums[right];  
+            // right=0 → sum=2
+            // right=1 → sum=5
+            // right=2 → sum=6
+            // right=3 → sum=8 (>=7)
+
+            // Try to shrink window
+            while (sum >= target) {
+
+                // right=3, left=0 → window [2,3,1,2]
+                minLen = min(minLen, right - left + 1); // len=4
+
+                sum -= nums[left];  
+                // remove nums[0]=2 → sum=6
+                left++;              // left=1
+            }
+
+            // right=4 → sum=10
+            // shrink again → [1,2,4] → len=3
+            // right=5 → sum=9
+            // shrink → [4,3] → len=2
+        }
+
+        return minLen == INT_MAX ? 0 : minLen;
+    }
+};
+
+🧪 STEP-BY-STEP WINDOW MOVEMENT
+[2,3,1,2]  sum=8  len=4
+[3,1,2,4]  sum=10 len=4
+[1,2,4]    sum=7  len=3
+[4,3]      sum=7  len=2 ✅
+
+⏱️ COMPLEXITY (SAY THIS)
+Metric	Value
+Time	O(n)
+Space	O(1)
+🎯 PATTERN RECOGNITION (VERY IMPORTANT)
+This problem is a template for:
+
+“Minimum / Maximum subarray with condition”
+
+Conditions for this pattern:
+
+✔ Contiguous subarray
+✔ All positive numbers
+✔ Need min / max length or sum
+
+🧠 ONE-LINE MEMORY HOOK
+
+Expand to satisfy condition, shrink to optimize answer
+
+🎤 FINAL INTERVIEW POWER LINE
+
+“Because all elements are positive, I can safely use a sliding window and move the left pointer greedily once the condition is satisfied.”
+
+💥 Interviewer impressed.
