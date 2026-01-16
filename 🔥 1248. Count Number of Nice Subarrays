@@ -1,0 +1,566 @@
+👉 Sliding Window Version (At Most Trick)
+✅ Scripted interview line (say verbatim)
+
+“Instead of counting subarrays with exactly K odd numbers directly, I’ll count subarrays with at most K odd numbers and subtract subarrays with at most K−1 odd numbers. This converts the problem into a standard sliding window.”
+
+💡 Interviewers love this sentence.
+
+🧠 Clear Intuition (Super Simple)
+
+Counting exactly K is hard with sliding window ❌
+But counting at most K is easy ✅
+
+So:
+
+Exactly K = AtMost(K) - AtMost(K-1)
+
+
+Example:
+
+AtMost(3)  → all subarrays with ≤3 odds
+AtMost(2)  → all subarrays with ≤2 odds
+Difference → exactly 3 odds
+
+🚀 Helper Function: Count Subarrays with At Most K Odds
+Sliding Window Idea
+
+Expand right pointer r
+
+Track number of odd numbers
+
+Shrink left pointer l if odds > k
+
+At each step, valid subarrays ending at r = (r - l + 1)
+
+💻 C++ Code (WITH INLINE DRY RUN 👇)
+class Solution {
+public:
+    // Helper function
+    int atMost(vector<int>& nums, int k) {
+        int left = 0;
+        int countOdd = 0;
+        int result = 0;
+
+        for (int right = 0; right < nums.size(); right++) {
+
+            // Step 1: include nums[right]
+            if (nums[right] % 2 == 1)
+                countOdd++;
+
+            // Step 2: shrink window if odds > k
+            while (countOdd > k) {
+                if (nums[left] % 2 == 1)
+                    countOdd--;
+                left++;
+            }
+
+            // Step 3: count valid subarrays ending at right
+            result += (right - left + 1);
+
+            /*
+            🔍 INLINE DRY RUN (nums=[1,1,2,1,1], k=3)
+
+            right=0 → odd=1 → window=[0,0] → +1
+            right=1 → odd=2 → window=[0,1] → +2
+            right=2 → odd=2 → window=[0,2] → +3
+            right=3 → odd=3 → window=[0,3] → +4
+            right=4 → odd=4 ❌
+                shrink:
+                left=0 (odd) → odd=3
+            window=[1,4] → +4
+            */
+        }
+        return result;
+    }
+
+    int numberOfSubarrays(vector<int>& nums, int k) {
+        return atMost(nums, k) - atMost(nums, k - 1);
+    }
+};
+
+⏱️ Time & Space Complexity
+
+Time: O(n)
+
+Space: O(1) (no hashmap!)
+
+🔍 Pattern Recognition (VERY IMPORTANT)
+🧩 This is the famous:
+
+At Most K Sliding Window Pattern
+
+Use this when:
+
+Asked for exactly K
+
+Constraint is count-based
+
+Array contains non-negative / binary-like data
+
+🔁 Similar Problems Using Same Trick
+
+Count Number of Nice Subarrays ⭐
+
+Subarrays with K Different Integers
+
+Binary Subarrays With Sum
+
+Max Consecutive Ones III
+
+🚫 Common Mistakes
+
+❌ Forgetting to subtract atMost(k-1)
+
+❌ Using sliding window directly for “exactly K”
+
+❌ Counting subarrays incorrectly (right-left+1 is key)
+
+🧠 Easy Memory Trick
+
+“Exactly = AtMost(K) − AtMost(K−1)”
+
+🔚 Final Interview Tip
+
+If interviewer asks:
+
+“Why does this work?”
+
+Say:
+
+“Because every subarray with exactly K odds is counted in atMost(K) but excluded from atMost(K−1).”
+
+If you want next:
+
+🔄 Prefix sum vs Sliding window comparison
+
+🧪 Interview Q&A follow-ups
+
+🧠 Universal template for AtMost problems
+
+Just say the word 👌
+
+yes
+
+Perfect 👍
+I’ll give you ALL THREE in a clean, exam-ready way.
+
+🔥 Prefix Sum vs Sliding Window
++ Universal AtMost(K) Template
++ Interview Follow-up Q&A
+✅ Scripted interview line (say verbatim)
+
+“If the problem asks for counting subarrays with exactly K, I first check whether the constraint is monotonic. If yes, I use the AtMost(K) sliding window trick; otherwise, I fall back to prefix sum with a hashmap.”
+
+🧠 Prefix Sum vs Sliding Window (VERY CLEAR)
+Feature	Prefix Sum + Map	Sliding Window (AtMost)
+Works for negatives?	✅ YES	❌ NO
+Extra space	O(n)	O(1)
+Easy to think	Medium	Easy
+Used when	Exact K, complex sums	Count-based, monotonic
+Interview favorite	⭐⭐⭐⭐	⭐⭐⭐⭐⭐
+🟢 When to Use Sliding Window (AtMost)
+
+Use it when:
+
+Array elements are non-negative / binary / countable
+
+Condition is monotonic
+
+Asked for exactly K
+
+Examples:
+
+Odd count
+
+Number of distinct elements
+
+Sum of 0s and 1s
+
+Frequency-based constraints
+
+🔴 When to Use Prefix Sum
+
+Use it when:
+
+Array contains negative numbers
+
+Condition is not monotonic
+
+Exact sum/divisibility problems
+
+Examples:
+
+Subarray Sum = K
+
+Divisible by K
+
+Prefix difference problems
+
+🧠 UNIVERSAL TEMPLATE — AtMost(K)
+📌 Memorize this (WORKS IN MANY PROBLEMS)
+int atMost(vector<int>& nums, int k) {
+    int left = 0;
+    int ans = 0;
+    int constraint = 0;
+
+    for (int right = 0; right < nums.size(); right++) {
+
+        // add nums[right] effect
+        constraint += /* something */;
+
+        // shrink until valid
+        while (constraint > k) {
+            constraint -= /* nums[left] effect */;
+            left++;
+        }
+
+        // count subarrays ending at right
+        ans += (right - left + 1);
+    }
+
+    return ans;
+}
+
+// EXACTLY K
+return atMost(nums, k) - atMost(nums, k - 1);
+
+🧠 Easy Way to Remember
+
+“Right expands, left shrinks, count += window size”
+
+🔁 Problems That Use SAME TEMPLATE
+Problem	Constraint
+1248	Odd numbers
+930	Binary sum
+992	Distinct integers
+1004	Zeros
+1438	Absolute difference
+🧪 Interview Follow-Up Questions (WITH ANSWERS)
+❓ Q1: Why can’t we use sliding window directly for exactly K?
+
+✅ Answer:
+
+Because sliding window only guarantees correctness for monotonic constraints, not exact equality.
+
+❓ Q2: Why does AtMost(K) − AtMost(K−1) work?
+
+✅ Answer:
+
+Every subarray with exactly K is counted in AtMost(K) but excluded from AtMost(K−1).
+
+❓ Q3: Can this work with negative numbers?
+
+❌ No
+
+Sliding window fails when window validity is not monotonic.
+
+❓ Q4: Which solution is better in interviews?
+
+✅ Answer:
+
+Sliding window, because it uses O(1) space and shows optimization thinking.
+
+🚫 Common Exam Mistakes
+
+❌ Forgetting AtMost(K-1)
+
+❌ Using sliding window with negatives
+
+❌ Wrong subarray count formula
+
+🧠 Final Memory Hook
+
+“Exact = AtMost − AtMost”
+
+🚀 You are now equipped to solve:
+
+Prefix Sum problems
+
+Sliding Window counting problems
+
+Exactly K pattern questions
+
+
+
+
+👉 Sliding Window Version (At Most Trick)
+✅ Scripted interview line (say verbatim)
+
+“Instead of counting subarrays with exactly K odd numbers directly, I’ll count subarrays with at most K odd numbers and subtract subarrays with at most K−1 odd numbers. This converts the problem into a standard sliding window.”
+
+💡 Interviewers love this sentence.
+
+🧠 Clear Intuition (Super Simple)
+
+Counting exactly K is hard with sliding window ❌
+But counting at most K is easy ✅
+
+So:
+
+Exactly K = AtMost(K) - AtMost(K-1)
+
+
+Example:
+
+AtMost(3)  → all subarrays with ≤3 odds
+AtMost(2)  → all subarrays with ≤2 odds
+Difference → exactly 3 odds
+
+🚀 Helper Function: Count Subarrays with At Most K Odds
+Sliding Window Idea
+
+Expand right pointer r
+
+Track number of odd numbers
+
+Shrink left pointer l if odds > k
+
+At each step, valid subarrays ending at r = (r - l + 1)
+
+💻 C++ Code (WITH INLINE DRY RUN 👇)
+class Solution {
+public:
+    // Helper function
+    int atMost(vector<int>& nums, int k) {
+        int left = 0;
+        int countOdd = 0;
+        int result = 0;
+
+        for (int right = 0; right < nums.size(); right++) {
+
+            // Step 1: include nums[right]
+            if (nums[right] % 2 == 1)
+                countOdd++;
+
+            // Step 2: shrink window if odds > k
+            while (countOdd > k) {
+                if (nums[left] % 2 == 1)
+                    countOdd--;
+                left++;
+            }
+
+            // Step 3: count valid subarrays ending at right
+            result += (right - left + 1);
+
+            /*
+            🔍 INLINE DRY RUN (nums=[1,1,2,1,1], k=3)
+
+            right=0 → odd=1 → window=[0,0] → +1
+            right=1 → odd=2 → window=[0,1] → +2
+            right=2 → odd=2 → window=[0,2] → +3
+            right=3 → odd=3 → window=[0,3] → +4
+            right=4 → odd=4 ❌
+                shrink:
+                left=0 (odd) → odd=3
+            window=[1,4] → +4
+            */
+        }
+        return result;
+    }
+
+    int numberOfSubarrays(vector<int>& nums, int k) {
+        return atMost(nums, k) - atMost(nums, k - 1);
+    }
+};
+
+⏱️ Time & Space Complexity
+
+Time: O(n)
+
+Space: O(1) (no hashmap!)
+
+🔍 Pattern Recognition (VERY IMPORTANT)
+🧩 This is the famous:
+
+At Most K Sliding Window Pattern
+
+Use this when:
+
+Asked for exactly K
+
+Constraint is count-based
+
+Array contains non-negative / binary-like data
+
+🔁 Similar Problems Using Same Trick
+
+Count Number of Nice Subarrays ⭐
+
+Subarrays with K Different Integers
+
+Binary Subarrays With Sum
+
+Max Consecutive Ones III
+
+🚫 Common Mistakes
+
+❌ Forgetting to subtract atMost(k-1)
+
+❌ Using sliding window directly for “exactly K”
+
+❌ Counting subarrays incorrectly (right-left+1 is key)
+
+🧠 Easy Memory Trick
+
+“Exactly = AtMost(K) − AtMost(K−1)”
+
+🔚 Final Interview Tip
+
+If interviewer asks:
+
+“Why does this work?”
+
+Say:
+
+“Because every subarray with exactly K odds is counted in atMost(K) but excluded from atMost(K−1).”
+
+If you want next:
+
+🔄 Prefix sum vs Sliding window comparison
+
+🧪 Interview Q&A follow-ups
+
+🧠 Universal template for AtMost problems
+
+Just say the word 👌
+
+yes
+
+Perfect 👍
+I’ll give you ALL THREE in a clean, exam-ready way.
+
+🔥 Prefix Sum vs Sliding Window
++ Universal AtMost(K) Template
++ Interview Follow-up Q&A
+✅ Scripted interview line (say verbatim)
+
+“If the problem asks for counting subarrays with exactly K, I first check whether the constraint is monotonic. If yes, I use the AtMost(K) sliding window trick; otherwise, I fall back to prefix sum with a hashmap.”
+
+🧠 Prefix Sum vs Sliding Window (VERY CLEAR)
+Feature	Prefix Sum + Map	Sliding Window (AtMost)
+Works for negatives?	✅ YES	❌ NO
+Extra space	O(n)	O(1)
+Easy to think	Medium	Easy
+Used when	Exact K, complex sums	Count-based, monotonic
+Interview favorite	⭐⭐⭐⭐	⭐⭐⭐⭐⭐
+🟢 When to Use Sliding Window (AtMost)
+
+Use it when:
+
+Array elements are non-negative / binary / countable
+
+Condition is monotonic
+
+Asked for exactly K
+
+Examples:
+
+Odd count
+
+Number of distinct elements
+
+Sum of 0s and 1s
+
+Frequency-based constraints
+
+🔴 When to Use Prefix Sum
+
+Use it when:
+
+Array contains negative numbers
+
+Condition is not monotonic
+
+Exact sum/divisibility problems
+
+Examples:
+
+Subarray Sum = K
+
+Divisible by K
+
+Prefix difference problems
+
+🧠 UNIVERSAL TEMPLATE — AtMost(K)
+📌 Memorize this (WORKS IN MANY PROBLEMS)
+int atMost(vector<int>& nums, int k) {
+    int left = 0;
+    int ans = 0;
+    int constraint = 0;
+
+    for (int right = 0; right < nums.size(); right++) {
+
+        // add nums[right] effect
+        constraint += /* something */;
+
+        // shrink until valid
+        while (constraint > k) {
+            constraint -= /* nums[left] effect */;
+            left++;
+        }
+
+        // count subarrays ending at right
+        ans += (right - left + 1);
+    }
+
+    return ans;
+}
+
+// EXACTLY K
+return atMost(nums, k) - atMost(nums, k - 1);
+
+🧠 Easy Way to Remember
+
+“Right expands, left shrinks, count += window size”
+
+🔁 Problems That Use SAME TEMPLATE
+Problem	Constraint
+1248	Odd numbers
+930	Binary sum
+992	Distinct integers
+1004	Zeros
+1438	Absolute difference
+🧪 Interview Follow-Up Questions (WITH ANSWERS)
+❓ Q1: Why can’t we use sliding window directly for exactly K?
+
+✅ Answer:
+
+Because sliding window only guarantees correctness for monotonic constraints, not exact equality.
+
+❓ Q2: Why does AtMost(K) − AtMost(K−1) work?
+
+✅ Answer:
+
+Every subarray with exactly K is counted in AtMost(K) but excluded from AtMost(K−1).
+
+❓ Q3: Can this work with negative numbers?
+
+❌ No
+
+Sliding window fails when window validity is not monotonic.
+
+❓ Q4: Which solution is better in interviews?
+
+✅ Answer:
+
+Sliding window, because it uses O(1) space and shows optimization thinking.
+
+🚫 Common Exam Mistakes
+
+❌ Forgetting AtMost(K-1)
+
+❌ Using sliding window with negatives
+
+❌ Wrong subarray count formula
+
+🧠 Final Memory Hook
+
+“Exact = AtMost − AtMost”
+
+🚀 You are now equipped to solve:
+
+Prefix Sum problems
+
+Sliding Window counting problems
+
+Exactly K pattern questions
