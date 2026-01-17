@@ -1,0 +1,152 @@
+🎤 Interview Opening Line (BRUTE FORCE — ALWAYS FIRST ✅)
+
+“I’ll start with a brute-force approach: I’ll generate all substrings of length k, count how many vowels each substring has, and keep track of the maximum.”
+
+❌ Why Brute Force is Bad
+
+Number of substrings of length k → O(n)
+
+Counting vowels in each substring → O(k)
+
+Total = O(n × k) → slow when k is large
+
+➡️ We can optimize this.
+
+🎤 Transition Line (IMPORTANT)
+
+“Since the substring length is fixed, I can optimize this using a fixed-size sliding window.”
+
+✅ Optimized Approach — Fixed Size Sliding Window
+🧠 Core Idea
+
+Maintain a window of exactly size k
+
+Count vowels in the first window
+
+Slide the window:
+
+Remove left character
+
+Add right character
+
+Update maximum vowel count
+
+🪟 Window Rule
+Window size must always be exactly k
+
+🧪 Example Dry Run
+s = "abciiidef", k = 3
+
+Window	Vowels
+"abc"	1
+"bci"	1
+"cii"	2
+"iii"	3 ✅
+"iid"	2
+
+Answer = 3
+
+🧾 Fully Commented C++ Code (with inline dry run)
+class Solution {
+public:
+    int maxVowels(string s, int k) {
+
+        int vowelCount = 0;
+        int maxCount = 0;
+
+        // Count vowels in first window of size k
+        for (int i = 0; i < k; i++) {
+            if (isVowel(s[i]))
+                vowelCount++;
+        }
+
+        maxCount = vowelCount;
+
+        // Slide the window
+        for (int right = k; right < s.size(); right++) {
+
+            // Add new character
+            if (isVowel(s[right]))
+                vowelCount++;
+
+            // Remove left character
+            if (isVowel(s[right - k]))
+                vowelCount--;
+
+            maxCount = max(maxCount, vowelCount);
+
+            /*
+            Dry Run:
+            right = 3 -> window "bci"
+            add 'i', remove 'a'
+            */
+        }
+
+        return maxCount;
+    }
+
+    bool isVowel(char c) {
+        return c == 'a' || c == 'e' || c == 'i' ||
+               c == 'o' || c == 'u';
+    }
+};
+
+⏱️ Time & Space Complexity
+Type	Complexity
+Time	O(n)
+Space	O(1)
+🧠 Pattern Recognition (INTERVIEW GOLD)
+
+If problem says:
+
+“substring of length k”
+
+“maximum / minimum in window”
+
+“fixed length”
+
+👉 Fixed-Size Sliding Window
+
+🎤 Optimized Interview Line (Say This)
+
+“This is a fixed-size sliding window because the window length never changes; we only slide it forward.”
+
+🔁 Follow-up Interview Questions & Variants (VERY IMPORTANT)
+1️⃣ What if we want minimum number of vowels?
+
+Same logic
+
+Track minimum instead of maximum
+
+2️⃣ What if uppercase vowels are included?
+
+Convert to lowercase or check both cases
+
+3️⃣ What if k > s.length()?
+
+No valid window → return 0
+
+4️⃣ Return the actual substring?
+
+Track starting index of best window
+
+5️⃣ Related LeetCode Problems (MUST PRACTICE)
+Problem	Relation
+643. Maximum Average Subarray I	Fixed window
+1004. Max Consecutive Ones III	Sliding window
+567. Permutation in String	Fixed window
+438. Find All Anagrams in a String	Fixed window
+🧠 Reusable Fixed Window Template (MEMORIZE)
+build first window
+for each next element:
+    add right
+    remove left
+    update answer
+
+✅ Final Interview Takeaway
+
+Always start with brute force
+
+Recognize fixed vs variable window
+
+This question is easy but very commonly asked
