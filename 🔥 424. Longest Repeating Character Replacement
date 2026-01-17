@@ -1,0 +1,150 @@
+You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character. You can perform this operation at most k times.
+
+Return the length of the longest substring containing the same letter you can get after performing the above operations.
+
+ 
+
+Example 1:
+
+Input: s = "ABAB", k = 2
+Output: 4
+Explanation: Replace the two 'A's with two 'B's or vice versa.
+
+
+
+✅ Scripted interview line (say verbatim)
+
+“I’ll start by considering all substrings and checking if they can be made of the same character using at most K replacements, but that would be O(n²). To optimize it, I’ll use a sliding window with a frequency array and track the most frequent character in the window.”
+
+🧠 Clear Intuition (Super Simple)
+
+We want the longest substring
+
+We can replace at most k characters
+
+After replacements, all characters in the window must be the same
+
+👉 Key observation:
+
+window length - frequency of most frequent character ≤ k
+
+
+Why?
+
+Keep the most frequent character
+
+Replace all other characters
+
+🚀 Optimal Approach: Sliding Window + Frequency Count
+Why this works?
+
+Window is valid if replacements needed ≤ k
+
+As window grows, if invalid → shrink from left
+
+Track maximum window size
+
+💻 C++ Code (WITH INLINE DRY RUN 👇)
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        vector<int> freq(26, 0);
+
+        int left = 0;
+        int maxFreq = 0;  // max frequency of a single char in current window
+        int ans = 0;
+
+        for (int right = 0; right < s.size(); right++) {
+
+            // Step 1: add right character
+            freq[s[right] - 'A']++;
+            maxFreq = max(maxFreq, freq[s[right] - 'A']);
+
+            // Step 2: check if window is invalid
+            // replacements needed = windowSize - maxFreq
+            while ((right - left + 1) - maxFreq > k) {
+                freq[s[left] - 'A']--;
+                left++;
+            }
+
+            // Step 3: update answer
+            ans = max(ans, right - left + 1);
+
+            /*
+            🔍 INLINE DRY RUN (s="AABABBA", k=1)
+
+            right=0 → 'A' → freq[A]=1 → window="A" → valid → ans=1
+            right=1 → 'A' → freq[A]=2 → window="AA" → valid → ans=2
+            right=2 → 'B' → freq[B]=1 → window="AAB"
+                windowSize=3, maxFreq=2 → replace=1 ≤k → valid → ans=3
+            right=3 → 'A' → freq[A]=3 → window="AABA" → ans=4
+            right=4 → 'B' → freq[B]=2 → window="AABAB"
+                replace=5-3=2 >k ❌
+                shrink:
+                left=0 ('A') → freq[A]=2
+                window="ABAB" → replace=4-2=2 ❌
+                left=1 ('A') → freq[A]=1
+                window="BAB" → replace=3-2=1 ✅
+            continue...
+            */
+        }
+
+        return ans;
+    }
+};
+
+⏱️ Time & Space Complexity
+
+Time: O(n)
+
+Space: O(26) → O(1)
+
+🔍 Pattern Recognition (VERY IMPORTANT)
+🧩 This problem is:
+
+Sliding Window + Frequency + AtMost(K) Replacements
+
+Use this pattern when:
+
+Allowed to replace ≤ k
+
+Need longest substring
+
+Characters limited (A–Z)
+
+🔁 Similar Problems
+
+Longest Repeating Character Replacement ⭐
+
+Max Consecutive Ones III
+
+Maximize the Confusion of an Exam
+
+Max Consecutive Ones II
+
+🚫 Common Mistakes
+
+❌ Recomputing max frequency every time (slow)
+
+❌ Shrinking window incorrectly
+
+❌ Confusion about why maxFreq isn’t decreased
+
+🧠 Important Interview Trick (VERY COMMON QUESTION)
+❓ Why don’t we decrease maxFreq when shrinking?
+
+✅ Answer to say:
+
+“Even if maxFreq becomes slightly outdated, the window size calculation still remains correct and guarantees the maximum length.”
+
+🧠 Easy Memory Hook
+
+“Keep maxFreq, replace the rest.”
+
+🚀 You’ve now mastered:
+
+Sliding Window
+
+AtMost(K) logic
+
+Frequency-based optimization
