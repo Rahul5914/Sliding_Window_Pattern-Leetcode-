@@ -1,0 +1,148 @@
+(a.k.a. Maximum Sum of Subarray With All Unique Elements)
+
+🎤 Interview Opening Line (BRUTE FORCE — ALWAYS FIRST ✅)
+
+“I’ll start with a brute-force approach: I’ll generate all subarrays, check if all elements are unique using a set, and if they are, compute their sum and track the maximum.”
+
+❌ Why Brute Force is Bad
+
+Total subarrays → O(n²)
+
+Checking uniqueness → O(n)
+
+Total = O(n³) → too slow
+
+➡️ We must optimize.
+
+🎤 Transition Line (Very Important)
+
+“Since we want the maximum sum subarray with all unique elements, I can optimize this using a sliding window with a hash set.”
+
+✅ Optimized Approach — Sliding Window + HashSet
+🧠 Core Idea
+
+Maintain a window with all unique elements
+
+Use a set to track elements in the window
+
+If a duplicate appears:
+
+Shrink window from the left until duplicate is removed
+
+Keep a running sum of the window
+
+🪟 Window Rules
+Valid window → all elements are unique
+
+🧪 Example Dry Run
+nums = [4,2,4,5,6]
+
+Step	Window	Set	Sum	Max
+4	[4]	{4}	4	4
+2	[4,2]	{4,2}	6	6
+4	duplicate → shrink	{2}	2	6
+5	[2,4,5]	{2,4,5}	11	11
+6	[2,4,5,6]	{2,4,5,6}	17	17
+🧾 Fully Commented C++ Code (with inline dry run)
+class Solution {
+public:
+    int maximumUniqueSubarray(vector<int>& nums) {
+
+        unordered_set<int> st;   // to maintain unique elements
+        int left = 0;
+        int currSum = 0;
+        int maxSum = 0;
+
+        for (int right = 0; right < nums.size(); right++) {
+
+            // If duplicate found, shrink window
+            while (st.count(nums[right])) {
+                st.erase(nums[left]);      // remove left element
+                currSum -= nums[left];     // subtract from sum
+                left++;
+            }
+
+            // Add current element
+            st.insert(nums[right]);
+            currSum += nums[right];
+
+            // Update maximum sum
+            maxSum = max(maxSum, currSum);
+
+            /*
+            Dry Run Example:
+            nums = [4,2,4,5,6]
+            right=2 -> nums[2]=4 (duplicate)
+            shrink until 4 is removed
+            */
+        }
+
+        return maxSum;
+    }
+};
+
+⏱️ Time & Space Complexity
+Type	Complexity
+Time	O(n)
+Space	O(n) (set)
+🧠 Pattern Recognition (INTERVIEW GOLD)
+
+If problem says:
+
+“subarray”
+
+“all unique / no repeating”
+
+“maximum sum / maximum length”
+
+👉 Sliding Window + Set / Map
+
+🎤 Optimized Interview Line (Say This)
+
+“This is a variable-size sliding window where we shrink the window whenever the uniqueness constraint is violated.”
+
+🔁 Follow-up Interview Questions & Variants (MUST KNOW)
+1️⃣ What if we want maximum length instead of sum?
+
+Same logic
+
+Track right - left + 1
+
+2️⃣ Use map instead of set?
+
+Useful when frequency > 1 matters
+
+Similar to Longest Substring Without Repeating Characters
+
+3️⃣ What if array contains negative numbers?
+
+Sliding window may fail
+
+Need prefix sum + hash map (advanced)
+
+4️⃣ Return the actual subarray?
+
+Store best left and right
+
+5️⃣ Related LeetCode Problems
+Problem	Relation
+3. Longest Substring Without Repeating Characters	Same idea
+1004. Max Consecutive Ones III	Window shrink logic
+209. Minimum Size Subarray Sum	Window movement
+487. Max Consecutive Ones II	Constraint-based window
+🧠 Reusable Template (MEMORIZE)
+while (constraint violated) {
+    remove from left
+}
+add to window
+update answer
+
+✅ Final Interview Takeaway
+
+Always say brute force first
+
+Then apply sliding window
+
+This problem is very commonly asked
+
+If you want next:
