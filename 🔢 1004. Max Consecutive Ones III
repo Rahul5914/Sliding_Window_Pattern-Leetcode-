@@ -1,0 +1,134 @@
+🎤 Interview Opening Line (BRUTE FORCE — say this first ✅)
+
+“I’ll start with a brute-force approach: I’ll check every subarray, count how many zeros it has, and if zeros ≤ k, I’ll update the maximum length.”
+
+❌ Why Brute Force is Bad
+
+Total subarrays = O(n²)
+
+Counting zeros inside each subarray = O(n)
+
+Total = O(n³) → too slow
+
+➡️ Now I’ll optimize it.
+
+🎤 Transition Line (Very Important)
+
+“Since we want the longest subarray with at most k zeros, I can optimize this using a sliding window.”
+
+✅ Optimized Approach — Sliding Window (Two Pointers)
+🧠 Core Idea
+
+Expand the window using right
+
+Count number of zeros
+
+If zeros exceed k, shrink window from left
+
+Keep track of maximum window length
+
+🪟 Window Rule
+Valid window → zeroCount ≤ k
+
+🧪 Example Dry Run
+nums = [1,1,1,0,0,0,1,1,1,1,0]
+k = 2
+
+
+Expand right
+
+When zeros become 3 → shrink from left
+
+Best window length = 6
+
+🧾 Fully Commented C++ Code (with inline dry run)
+class Solution {
+public:
+    int longestOnes(vector<int>& nums, int k) {
+
+        int left = 0;          // start of window
+        int zeroCount = 0;     // number of zeros in window
+        int maxLen = 0;
+
+        for (int right = 0; right < nums.size(); right++) {
+
+            // include nums[right] in window
+            if (nums[right] == 0)
+                zeroCount++;
+
+            // if window becomes invalid, shrink from left
+            while (zeroCount > k) {
+                if (nums[left] == 0)
+                    zeroCount--;   // removing a zero
+                left++;
+            }
+
+            // valid window here
+            maxLen = max(maxLen, right - left + 1);
+
+            /*
+            Dry Run Snapshot:
+            right = 5 (nums[5] = 0)
+            zeroCount = 3 -> invalid
+            move left until zeroCount = 2
+            */
+        }
+
+        return maxLen;
+    }
+};
+
+⏱️ Time & Space Complexity
+Type	Complexity
+Time	O(n)
+Space	O(1)
+🧠 Pattern Recognition (INTERVIEW GOLD)
+
+If you hear:
+
+“longest subarray”
+
+“at most k”
+
+“flip / replace / delete k elements”
+
+👉 Variable-size Sliding Window
+
+🎤 Optimized Interview Line (Say this)
+
+“This is a variable-size sliding window because the window expands normally and shrinks only when the constraint is violated.”
+
+🔁 Follow-up Interview Questions & Variants (VERY IMPORTANT)
+1️⃣ What if you must flip exactly k zeros?
+
+Update answer only when zeroCount == k
+
+2️⃣ What if k ≥ total zeros?
+
+Entire array is valid
+➡️ Answer = nums.size()
+
+3️⃣ Return the actual subarray?
+
+Store best left and right
+
+4️⃣ If array had values other than 0/1?
+
+Track “bad elements” instead of zeros
+
+5️⃣ Related Must-Do Problems
+Problem	Relation
+487. Max Consecutive Ones II	k = 1
+424. Longest Repeating Character Replacement	Same logic
+1493. Longest Subarray of 1s After Deleting One	k = 1
+209. Minimum Size Subarray Sum	Shrinking window
+🧠 One-Line Template to Memorize
+expand window → fix if invalid → update answer
+
+✅ Final Interview Takeaway
+
+Start with brute force verbally
+
+Then slide window confidently
+
+This problem is guaranteed interview favorite
