@@ -1,0 +1,188 @@
+✅ Scripted interview line (say verbatim)
+
+“I’ll start with a brute-force approach by checking every substring and validating word counts, but that would be inefficient. To optimize it, I’ll use a sliding window with a hashmap and move in steps of word length to ensure linear traversal.”
+
+🧠 Clear Intuition (Very Simple)
+
+You are given:
+
+A string s
+
+An array of words words (all words have same length)
+
+You must find all starting indices where:
+
+A substring is formed by concatenating all words exactly once
+
+Order does not matter
+
+No extra characters in between
+
+👉 Important facts:
+
+All words have same length = wordLen
+
+Total window length = wordLen * wordsCount
+
+This screams 👉 Sliding Window with fixed-size chunks
+
+❌ Why brute force is bad
+
+For every index, check substring of size totalLen
+
+Break into words and count → O(n × wordCount) → TLE
+
+🚀 Optimal Approach: Sliding Window + HashMap (WORD-BY-WORD)
+Key Trick (INTERVIEW GOLD 🥇)
+
+Instead of moving window 1 character at a time,
+👉 move it wordLen characters at a time
+
+Also:
+
+We try wordLen different starting offsets
+
+Because valid words must align perfectly
+
+✅ Algorithm (Step-by-step)
+
+Store frequency of words in need map
+
+For each offset i from 0 to wordLen-1:
+
+Use sliding window:
+
+Move right by wordLen
+
+Track word frequencies in window
+
+If a word count exceeds → shrink from left
+
+If window size == totalLen → record answer
+
+💻 C++ Code (WITH INLINE DRY RUN 👇)
+class Solution {
+public:
+    vector<int> findSubstring(string s, vector<string>& words) {
+        vector<int> ans;
+        if (words.empty()) return ans;
+
+        int wordLen = words[0].size();
+        int wordCount = words.size();
+        int totalLen = wordLen * wordCount;
+
+        unordered_map<string, int> need;
+        for (auto &w : words) need[w]++;
+
+        // Try all possible starting offsets
+        for (int i = 0; i < wordLen; i++) {
+            unordered_map<string, int> window;
+            int left = i, right = i;
+            int count = 0;
+
+            while (right + wordLen <= s.size()) {
+                string word = s.substr(right, wordLen);
+                right += wordLen;
+
+                // If word is valid
+                if (need.count(word)) {
+                    window[word]++;
+                    count++;
+
+                    // Too many of same word → shrink
+                    while (window[word] > need[word]) {
+                        string leftWord = s.substr(left, wordLen);
+                        window[leftWord]--;
+                        left += wordLen;
+                        count--;
+                    }
+
+                    // Found valid window
+                    if (count == wordCount) {
+                        ans.push_back(left);
+                    }
+                } 
+                else {
+                    // Reset window
+                    window.clear();
+                    count = 0;
+                    left = right;
+                }
+
+                /*
+                🔍 INLINE DRY RUN
+                s="barfoothefoobarman"
+                words=["foo","bar"]
+                wordLen=3, totalLen=6
+
+                i=0:
+                right=0 → "bar" → valid
+                right=3 → "foo" → valid → count=2
+                count==2 → ans.push_back(0)
+
+                right=6 → "the" → invalid
+                reset window
+                */
+            }
+        }
+        return ans;
+    }
+};
+
+⏱️ Time & Space Complexity
+
+Time: O(n)
+(each word visited once per offset)
+
+Space: O(m)
+(m = number of words)
+
+🔍 Pattern Recognition (VERY IMPORTANT)
+🧩 This problem is:
+
+Sliding Window + HashMap + Fixed Word Length
+
+Use this pattern when:
+
+Words are same length
+
+Order doesn’t matter
+
+Exact frequency matching required
+
+🔁 Similar / Follow-up Problems
+
+Substring with Concatenation of All Words ⭐
+
+Find All Anagrams in a String
+
+Permutation in String
+
+Minimum Window Substring (advanced)
+
+🚫 Common Mistakes
+
+❌ Sliding by 1 character instead of wordLen
+
+❌ Not handling multiple offsets
+
+❌ Forgetting to reset window on invalid word
+
+❌ Using only one hashmap
+
+🧠 Easy Memory Hook
+
+“Chunk the string by word length, not by characters.”
+
+🧪 Interview Follow-up Questions (with answers)
+❓ Why do we try multiple offsets?
+
+✅ Because valid concatenation must align with word boundaries.
+
+❓ Can this be done with one window?
+
+❌ No, misaligned words break correctness.
+
+❓ What if word lengths are different?
+
+👉 This approach fails → brute force or trie needed.
